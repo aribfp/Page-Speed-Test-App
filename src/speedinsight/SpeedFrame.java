@@ -175,17 +175,23 @@ public class SpeedFrame extends javax.swing.JFrame {
                 String data[] = jTextArea1.getText().split("\\r?\\n");
                 List mobile = new ArrayList();
                 List desktop = new ArrayList();
+                
+                DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+                dtm.setRowCount(0);
 
                 int progress = 0;
                 jProgressBar1.setValue(progress);
                 for(int i = 0; i < data.length; i++ ){
+                    
+                  try{
                     progress += (99/data.length);
+                    
                     
                     driver.findElement(By.name("url")).clear();
                     driver.findElement(By.name("url")).sendKeys(data[i]);
                     driver.findElement(By.xpath("//*[contains(text(), 'ANALYZE')]")).click();
 
-                    WebDriverWait wait = new WebDriverWait(driver, 30);
+                    WebDriverWait wait = new WebDriverWait(driver, 60);
 
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='goog-control result']")));
                     mobile.add(driver.findElement(By.xpath("//*[@class='lh-gauge__percentage']")).getText());
@@ -220,7 +226,9 @@ public class SpeedFrame extends javax.swing.JFrame {
                         Logger.getLogger(SpeedFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
-                    
+                    }catch(Exception e){
+                       i = i - 1;
+                    }
                 }
                    
                 jProgressBar1.setValue(100);
@@ -232,7 +240,6 @@ public class SpeedFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-//        currentThread().getThreadGroup().destroy();
         driver.quit();
     }//GEN-LAST:event_jButton2ActionPerformed
 
